@@ -7,6 +7,22 @@ class AccountsController < ApplicationController
 
   def show
     @adjustments = @account.adjustments.order(adjusted_at: :desc)
+
+    # Calculate projection if parameters present
+    if @account.projection && params[:target_date].present?
+      begin
+        target_date = Date.parse(params[:target_date])
+        calculator = ProjectionCalculator.new(
+          projection: @account.projection,
+          current_balance: @account.balance,
+          target_date: target_date
+        )
+        @projection_result = calculator.calculate
+      rescue Date::Error
+        # Invalid date format - ignore and don't calculate
+        @projection_result = nil
+      end
+    end
   end
 
   def new
