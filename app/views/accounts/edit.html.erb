@@ -1,0 +1,10 @@
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <%= link_to "← Back to Account", account_path(@account), class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Account</h1>
+    <%= render "form", account: @account %>
+  </div>
+</div>

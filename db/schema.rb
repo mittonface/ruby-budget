@@ -10,8 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 0) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_01_145148) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "accounts", force: :cascade do |t|
+    t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.decimal "initial_balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "name", null: false
+    t.datetime "opened_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "adjustments", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "adjusted_at", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "adjusted_at"], name: "index_adjustments_on_account_id_and_adjusted_at"
+    t.index ["account_id"], name: "index_adjustments_on_account_id"
+  end
+
+  add_foreign_key "adjustments", "accounts"
 end

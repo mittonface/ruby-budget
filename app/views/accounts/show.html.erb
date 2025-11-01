@@ -1,0 +1,82 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <%= link_to "← Back to Accounts", accounts_path, class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg p-8 mb-8">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @account.name %></h1>
+        <div class="text-sm text-gray-500">
+          <p>Opened: <%= @account.opened_at.strftime("%B %d, %Y") %></p>
+          <p>Initial Balance: <%= number_to_currency(@account.initial_balance) %></p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-sm text-gray-500 mb-1">Current Balance</p>
+        <p class="text-4xl font-bold <%= @account.balance >= 0 ? 'text-green-600' : 'text-red-600' %>">
+          <%= number_to_currency(@account.balance) %>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <%= link_to "Add Adjustment", new_account_adjustment_path(@account), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+      <%= link_to "Edit Account", edit_account_path(@account), class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors" %>
+      <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will delete all adjustments." }, class: "bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+    </div>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-900">Adjustment History</h2>
+    </div>
+
+    <% if @adjustments.any? %>
+      <% running_balance = @account.balance %>
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Date
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Description
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Amount
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Running Balance
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @adjustments.each do |adjustment| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= adjustment.adjusted_at.strftime("%b %d, %Y %I:%M %p") %>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900">
+                <%= adjustment.description.presence || "—" %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right">
+                <span class="font-medium <%= adjustment.amount >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                  <%= adjustment.amount >= 0 ? '+' : '' %><%= number_to_currency(adjustment.amount) %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
+                <%= number_to_currency(running_balance) %>
+                <% running_balance -= adjustment.amount %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="px-6 py-8 text-center text-gray-500">
+        <p>No adjustments yet. Add your first adjustment to start tracking changes.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
