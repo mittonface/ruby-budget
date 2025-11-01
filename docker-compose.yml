@@ -21,12 +21,11 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: build
+      dockerfile: Dockerfile.dev
       args:
         RUBY_VERSION: 3.3.6
     container_name: ruby_budget_web
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle check || bundle install && rails server -b 0.0.0.0"
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/ruby_budget_development
