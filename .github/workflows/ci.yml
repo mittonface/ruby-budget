@@ -101,6 +101,9 @@ jobs:
           bin/rails db:create
           bin/rails db:schema:load
 
+      - name: Build Tailwind CSS
+        run: bin/rails tailwindcss:build
+
       - name: Run tests
         run: bin/rails test
 
