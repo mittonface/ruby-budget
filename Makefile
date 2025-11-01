@@ -1,4 +1,4 @@
-.PHONY: help setup install start stop restart logs console db-create db-migrate db-seed db-reset test clean build up down shell db-console rubocop format docker-build docker-up docker-down docker-logs docker-console docker-shell
+.PHONY: help setup install start stop restart logs console db-create db-migrate db-seed db-reset test test-models test-system test-all clean build up down shell db-console rubocop format docker-build docker-up docker-down docker-logs docker-console docker-shell
 
 # Default target
 .DEFAULT_GOAL := help
@@ -42,8 +42,17 @@ db-reset: ## Reset database (drop, create, migrate, seed)
 db-console: ## Open database console
 	rails dbconsole
 
-test: ## Run tests
+test: ## Run all tests (models + system)
 	rails test
+	rails test:system
+
+test-models: ## Run model tests only
+	rails test:models
+
+test-system: ## Run system tests only
+	rails test:system
+
+test-all: test ## Run all tests (alias for test)
 
 rubocop: ## Run RuboCop linter
 	bundle exec rubocop
