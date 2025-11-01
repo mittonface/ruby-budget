@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   # Savings account management
   resources :accounts do
     resources :adjustments, only: [:new, :create]
+    resource :projection, only: [:edit, :update]
   end
 
   # Defines the root path route ("/")
