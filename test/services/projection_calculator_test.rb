@@ -219,6 +219,6 @@ class ProjectionCalculatorTest < ActiveSupport::TestCase
 
     # Should not raise errors and should return rounded values
     assert_kind_of BigDecimal, result[:final_balance]
-    assert_equal 2, result[:final_balance].to_s.split('.').last.length
+    assert_equal 2, result[:final_balance].to_s.split(".").last.length
   end
 end

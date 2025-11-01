@@ -9,6 +9,6 @@ class CreateAdjustments < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :adjustments, [:account_id, :adjusted_at]
+    add_index :adjustments, [ :account_id, :adjusted_at ]
   end
 end
