@@ -1,0 +1,35 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Projection Settings</h1>
+
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <%= form_with(model: @projection, url: account_projection_path(@account), method: :patch, local: true) do |form| %>
+      <% if @projection.errors.any? %>
+        <div id="error_explanation" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          <h2 class="font-bold mb-2"><%= pluralize(@projection.errors.count, "error") %> prohibited this projection from being saved:</h2>
+          <ul class="list-disc list-inside">
+            <% @projection.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-4">
+        <%= form.label :monthly_contribution, "Expected Monthly Contribution", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.number_field :monthly_contribution, step: 0.01, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <p class="text-gray-600 text-xs mt-1">Amount you plan to deposit each month</p>
+      </div>
+
+      <div class="mb-6">
+        <%= form.label :annual_return_rate, "Expected Annual Return Rate (%)", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.number_field :annual_return_rate, step: 0.01, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <p class="text-gray-600 text-xs mt-1">Enter as percentage (e.g., 5.0 for 5% annual returns)</p>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <%= form.submit "Save Projection Settings", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= link_to "Cancel", @account, class: "text-gray-600 hover:text-gray-800" %>
+      </div>
+    <% end %>
+  </div>
+</div>

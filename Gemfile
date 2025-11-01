@@ -60,6 +60,8 @@ group :test do
   # System testing with browser automation
   gem "capybara"
   gem "selenium-webdriver"
+  # Controller testing helpers for assigns and assert_template
+  gem "rails-controller-testing"
 end
 
 group :development do

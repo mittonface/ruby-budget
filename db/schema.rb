@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_01_145148) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_01_194727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,5 +34,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_145148) do
     t.index ["account_id"], name: "index_adjustments_on_account_id"
   end
 
+  create_table "projections", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.decimal "annual_return_rate", precision: 5, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.decimal "monthly_contribution", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_projections_on_account_id", unique: true
+  end
+
   add_foreign_key "adjustments", "accounts"
+  add_foreign_key "projections", "accounts"
 end

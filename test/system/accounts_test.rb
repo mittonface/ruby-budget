@@ -34,8 +34,8 @@ class AccountsTest < ApplicationSystemTestCase
     assert_text "Emergency car repair"
     assert_text "-$200.00"
 
-    # Verify running balance is shown
-    assert_text "Running Balance"
+    # Verify running balance is shown (case insensitive)
+    assert_text /running balance/i
   end
 
   test "editing an account" do

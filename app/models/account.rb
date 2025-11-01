@@ -1,5 +1,6 @@
 class Account < ApplicationRecord
   has_many :adjustments, dependent: :destroy
+  has_one :projection, dependent: :destroy
 
   validates :name, presence: true
   validates :balance, presence: true, numericality: true

@@ -27,6 +27,78 @@
     </div>
   </div>
 
+  <!-- Projection Settings Section -->
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-6 mb-6">
+    <h2 class="text-2xl font-bold mb-4">Future Projections</h2>
+
+    <% if @account.projection %>
+      <div class="mb-4">
+        <p class="text-gray-700">
+          <span class="font-semibold">Monthly Contribution:</span>
+          <%= number_to_currency(@account.projection.monthly_contribution) %>
+        </p>
+        <p class="text-gray-700">
+          <span class="font-semibold">Expected Annual Return:</span>
+          <%= number_to_percentage(@account.projection.annual_return_rate, precision: 2) %>
+        </p>
+      </div>
+      <%= link_to "Edit Projection Settings", edit_account_projection_path(@account), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+    <% else %>
+      <p class="text-gray-600 mb-4">Set up projection parameters to see future balance estimates.</p>
+      <%= link_to "Set Up Projection", edit_account_projection_path(@account), class: "bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+    <% end %>
+  </div>
+
+  <!-- Projection Calculator Section -->
+  <% if @account.projection %>
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-6 mb-6">
+      <h2 class="text-2xl font-bold mb-4">Calculate Future Balance</h2>
+
+      <%= form_with url: account_path(@account), method: :get, local: true do |form| %>
+        <div class="mb-4">
+          <%= form.label :target_date, "Project to Date:", class: "block text-gray-700 text-sm font-bold mb-2" %>
+          <%= form.date_field :target_date, value: params[:target_date], class: "shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        </div>
+        <%= form.submit "Calculate Projection", class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+      <% end %>
+
+      <% if @projection_result %>
+        <div class="mt-6">
+          <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+            <p class="text-2xl font-bold text-green-800">
+              Projected Balance: <%= number_to_currency(@projection_result[:final_balance]) %>
+            </p>
+            <p class="text-sm text-green-700">as of <%= params[:target_date] %></p>
+          </div>
+
+          <h3 class="text-xl font-bold mb-3">Monthly Breakdown</h3>
+          <div class="overflow-x-auto max-h-96 overflow-y-auto">
+            <table class="min-w-full bg-white border">
+              <thead class="bg-gray-100 sticky top-0">
+                <tr>
+                  <th class="px-4 py-2 border text-left">Date</th>
+                  <th class="px-4 py-2 border text-right">Contribution</th>
+                  <th class="px-4 py-2 border text-right">Interest Earned</th>
+                  <th class="px-4 py-2 border text-right">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @projection_result[:monthly_breakdown].each do |month| %>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border"><%= month[:date].strftime("%b %Y") %></td>
+                    <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:contribution]) %></td>
+                    <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:interest]) %></td>
+                    <td class="px-4 py-2 border text-right font-semibold"><%= number_to_currency(month[:balance]) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <div class="bg-white shadow-sm rounded-lg overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200">
       <h2 class="text-xl font-semibold text-gray-900">Adjustment History</h2>
