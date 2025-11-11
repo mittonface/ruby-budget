@@ -70,4 +70,46 @@ class MortgageCalculatorTest < ActiveSupport::TestCase
     expected_principal = monthly_payment - breakdown[:interest_portion]
     assert_in_delta expected_principal, breakdown[:principal_portion], 0.01
   end
+
+  test "generates amortization schedule for specified months" do
+    calculator = MortgageCalculator.new(@mortgage)
+    schedule = calculator.generate_amortization_schedule(12)
+
+    assert_equal 12, schedule.length
+
+    # First month
+    first = schedule[0]
+    assert_equal 1, first[:month]
+    assert_in_delta 300000.0, first[:starting_balance], 0.01
+    assert_in_delta 875.0, first[:interest_payment], 1.0
+    assert_in_delta 472.13, first[:principal_payment], 1.0
+    assert first[:ending_balance] < first[:starting_balance]
+
+    # Last month should have lower balance
+    last = schedule[11]
+    assert_equal 12, last[:month]
+    assert last[:ending_balance] < first[:ending_balance]
+
+    # Verify balance decreases each month
+    schedule.each_with_index do |payment, index|
+      if index > 0
+        assert payment[:starting_balance] < schedule[index - 1][:starting_balance]
+      end
+    end
+  end
+
+  test "generates schedule considering extra payments from projection" do
+    # Add projection with extra monthly payment
+    @mortgage.build_projection(monthly_contribution: 500.0)
+
+    calculator = MortgageCalculator.new(@mortgage)
+    schedule_with_extra = calculator.generate_amortization_schedule(12)
+
+    # Without extra payments
+    @mortgage.projection.monthly_contribution = 0
+    schedule_normal = calculator.generate_amortization_schedule(12)
+
+    # Extra payments should reduce balance faster
+    assert schedule_with_extra[11][:ending_balance] < schedule_normal[11][:ending_balance]
+  end
 end
