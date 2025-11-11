@@ -8,8 +8,15 @@ class AccountsController < ApplicationController
   def show
     @adjustments = @account.adjustments.order(adjusted_at: :desc)
 
-    # Calculate projection if target_date is saved
-    if @account.projection && @account.projection.target_date.present?
+    if @account.is_a?(Mortgage)
+      # Calculate mortgage-specific data
+      calculator = MortgageCalculator.new(@account)
+      @monthly_payment = calculator.calculate_monthly_payment
+      @payment_breakdown = calculator.calculate_payment_breakdown
+      @amortization_schedule = calculator.generate_amortization_schedule(360) # 30 years max
+      @payoff_date = calculator.calculate_payoff_date
+    elsif @account.projection && @account.projection.target_date.present?
+      # Calculate projection for savings accounts
       calculator = ProjectionCalculator.new(
         projection: @account.projection,
         current_balance: @account.balance,
