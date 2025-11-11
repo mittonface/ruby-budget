@@ -30,8 +30,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "updated_at", null: false
-    t.index ["account_id", "adjusted_at"], name: "index_adjustments_on_account_id_and_adjusted_at"
-    t.index ["account_id"], name: "index_adjustments_on_account_id"
+    t.index [ "account_id", "adjusted_at" ], name: "index_adjustments_on_account_id_and_adjusted_at"
+    t.index [ "account_id" ], name: "index_adjustments_on_account_id"
   end
 
   create_table "projections", force: :cascade do |t|
@@ -41,7 +41,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
     t.decimal "monthly_contribution", precision: 10, scale: 2, default: "0.0", null: false
     t.date "target_date"
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_projections_on_account_id", unique: true
+    t.index [ "account_id" ], name: "index_projections_on_account_id", unique: true
   end
 
   add_foreign_key "adjustments", "accounts"
