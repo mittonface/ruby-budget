@@ -122,7 +122,7 @@ export default class extends Controller {
       },
       xaxis: {
         categories: dates,
-        tickAmount: 12,
+        tickAmount: 18,
         labels: {
           rotate: -45,
           rotateAlways: false
