@@ -124,7 +124,10 @@ export default class extends Controller {
         categories: dates,
         labels: {
           rotate: -45,
-          rotateAlways: false
+          rotateAlways: false,
+          showDuplicates: false,
+          hideOverlappingLabels: true,
+          tickAmount: Math.floor(dates.length / 2)
         }
       },
       yaxis: {
