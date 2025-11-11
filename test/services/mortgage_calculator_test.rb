@@ -44,4 +44,30 @@ class MortgageCalculatorTest < ActiveSupport::TestCase
     # Known value: $500k at 4% for 15 years = ~$3,698.44/month
     assert_in_delta 3698.44, monthly_payment, 0.01
   end
+
+  test "calculates payment breakdown with principal and interest portions" do
+    calculator = MortgageCalculator.new(@mortgage)
+    breakdown = calculator.calculate_payment_breakdown
+
+    monthly_payment = calculator.calculate_monthly_payment
+
+    # First payment: mostly interest
+    assert_in_delta 875.0, breakdown[:interest_portion], 1.0  # ~$875 interest
+    assert_in_delta 472.13, breakdown[:principal_portion], 1.0  # ~$472 principal
+    assert_in_delta monthly_payment, breakdown[:interest_portion] + breakdown[:principal_portion], 0.01
+  end
+
+  test "calculates payment breakdown using current balance" do
+    # Simulate mortgage with $200k remaining
+    @mortgage.balance = 200000.0
+    calculator = MortgageCalculator.new(@mortgage)
+    breakdown = calculator.calculate_payment_breakdown
+
+    # Interest on $200k at 3.5% annual = $200k * (3.5/12/100) = $583.33
+    assert_in_delta 583.33, breakdown[:interest_portion], 0.01
+
+    monthly_payment = calculator.calculate_monthly_payment
+    expected_principal = monthly_payment - breakdown[:interest_portion]
+    assert_in_delta expected_principal, breakdown[:principal_portion], 0.01
+  end
 end
