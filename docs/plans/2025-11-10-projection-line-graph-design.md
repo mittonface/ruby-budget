@@ -191,3 +191,25 @@ Potential improvements (not in current scope):
 - Adjust projection parameters inline with live chart updates
 - Compare multiple accounts on same chart
 - Show historical actuals vs. projections
+
+## Implementation Notes
+
+**Implementation Date**: 2025-11-10
+
+**Changes Made**:
+- Added ApexCharts CDN to application layout
+- Created `projection_chart_controller.js` Stimulus controller
+- Modified `accounts/show.html.erb` to display chart with collapsible table
+- All tests passing (47+ tests)
+
+**Verification**:
+- Chart renders with three series (balance, contributions, interest)
+- Collapsible table provides detailed monthly breakdown
+- Turbo frame updates work correctly
+- Responsive on mobile viewports
+
+**Files Modified**:
+- `app/views/layouts/application.html.erb`
+- `app/views/accounts/show.html.erb`
+- `app/javascript/controllers/projection_chart_controller.js` (new)
+- `test/system/projection_chart_test.rb` (new)
