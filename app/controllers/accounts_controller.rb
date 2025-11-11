@@ -2,7 +2,13 @@ class AccountsController < ApplicationController
   before_action :set_account, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @accounts = Account.all.order(created_at: :desc)
+    @savings_accounts = SavingsAccount.all.order(created_at: :desc)
+    @mortgages = Mortgage.all.order(created_at: :desc)
+
+    # Calculate net worth
+    total_savings = @savings_accounts.sum(:balance)
+    total_debt = @mortgages.sum(:balance)
+    @net_worth = total_savings - total_debt
   end
 
   def show
