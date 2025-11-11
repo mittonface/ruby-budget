@@ -73,7 +73,7 @@ class MortgageCalculator
       total_principal = principal_payment + extra_payment
 
       # Update balance
-      balance = [balance - total_principal, 0].max
+      balance = [ balance - total_principal, 0 ].max
 
       schedule << {
         month: i + 1,
