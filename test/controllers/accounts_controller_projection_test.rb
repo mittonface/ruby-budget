@@ -23,8 +23,9 @@ class AccountsControllerProjectionTest < ActionDispatch::IntegrationTest
 
   test "show page with target_date calculates projection" do
     target_date = Date.today + 12.months
+    @projection.update!(target_date: target_date)
 
-    get account_url(@account), params: { target_date: target_date.to_s }
+    get account_url(@account)
     assert_response :success
 
     result = assigns(:projection_result)
@@ -36,14 +37,8 @@ class AccountsControllerProjectionTest < ActionDispatch::IntegrationTest
   test "show page without projection does not calculate even with target_date" do
     @account.projection.destroy
 
-    get account_url(@account), params: { target_date: (Date.today + 1.year).to_s }
+    get account_url(@account)
     assert_response :success
     assert_nil assigns(:projection_result)
-  end
-
-  test "show page with invalid target_date handles gracefully" do
-    get account_url(@account), params: { target_date: "invalid" }
-    assert_response :success
-    # Should not crash, either shows error or ignores
   end
 end

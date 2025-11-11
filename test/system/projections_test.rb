@@ -28,24 +28,22 @@ class ProjectionsTest < ApplicationSystemTestCase
   end
 
   test "calculating projection with valid parameters" do
-    # Set up projection first
+    # Set up projection with target date
+    target_date = 5.years.from_now.to_date
     Projection.create!(
       account: @account,
       monthly_contribution: 500,
-      annual_return_rate: 6.0
+      annual_return_rate: 6.0,
+      target_date: target_date
     )
 
     visit account_url(@account)
 
     # Should show projection settings
     assert_text "Monthly Contribution: $500.00"
+    assert_text "Projecting Until:"
 
-    # Calculate projection - using page.execute_script to bypass browser validation issues
-    target_date = 5.years.from_now.to_date
-    page.execute_script("document.querySelector('input[type=\"date\"]').value = '#{target_date}'")
-    click_on "Calculate Projection"
-
-    # Should show results
+    # Should automatically show results
     assert_text "Projected Balance:"
     assert_text "Monthly Breakdown"
 
@@ -120,20 +118,17 @@ class ProjectionsTest < ApplicationSystemTestCase
   end
 
   test "recalculating after changing projection parameters" do
+    target_date = 10.years.from_now.to_date
     Projection.create!(
       account: @account,
       monthly_contribution: 500,
-      annual_return_rate: 5.0
+      annual_return_rate: 5.0,
+      target_date: target_date
     )
 
     visit account_url(@account)
 
-    # Calculate initial projection
-    target_date = 10.years.from_now.to_date
-    page.execute_script("document.querySelector('input[type=\"date\"]').value = '#{target_date}'")
-    click_on "Calculate Projection"
-
-    # Note the result
+    # Should show initial projection automatically
     initial_result = find(".bg-green-50").text
 
     # Edit projection to increase contribution
@@ -141,14 +136,10 @@ class ProjectionsTest < ApplicationSystemTestCase
     fill_in "Expected Monthly Contribution", with: 1000
     click_on "Save Projection Settings"
 
-    # Should now be back on account page
+    # Should now be back on account page with updated projection
     assert_text "Monthly Contribution: $1,000.00"
 
-    # Recalculate with same target date - need to wait for page to fully load
-    page.execute_script("document.querySelector('input[type=\"date\"]').value = '#{target_date}'")
-    click_on "Calculate Projection"
-
-    # Result should be different (higher)
+    # Result should be different (higher) - automatically recalculated
     new_result = find(".bg-green-50").text
     assert_not_equal initial_result, new_result
   end
@@ -170,20 +161,17 @@ class ProjectionsTest < ApplicationSystemTestCase
   end
 
   test "long-term projection displays many months" do
+    target_date = 30.years.from_now.to_date
     Projection.create!(
       account: @account,
       monthly_contribution: 500,
-      annual_return_rate: 7.0
+      annual_return_rate: 7.0,
+      target_date: target_date
     )
 
     visit account_url(@account)
 
-    # Calculate 30-year projection
-    target_date = 30.years.from_now.to_date
-    page.execute_script("document.querySelector('input[type=\"date\"]').value = '#{target_date}'")
-    click_on "Calculate Projection"
-
-    # Should show substantial growth
+    # Should automatically show substantial growth
     assert_text "Projected Balance:"
 
     # Table should be scrollable and show many rows
@@ -207,7 +195,7 @@ class ProjectionsTest < ApplicationSystemTestCase
     assert_text "Set up projection parameters to see future balance estimates"
     assert_selector "a", text: "Set Up Projection"
 
-    # Should NOT show calculator section
-    assert_no_text "Calculate Future Balance"
+    # Should NOT show projection results
+    assert_no_text "Projected Balance:"
   end
 end

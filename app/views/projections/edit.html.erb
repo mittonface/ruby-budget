@@ -20,10 +20,16 @@
         <p class="text-gray-600 text-xs mt-1">Amount you plan to deposit each month</p>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-4">
         <%= form.label :annual_return_rate, "Expected Annual Return Rate (%)", class: "block text-gray-700 text-sm font-bold mb-2" %>
         <%= form.number_field :annual_return_rate, step: 0.01, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
         <p class="text-gray-600 text-xs mt-1">Enter as percentage (e.g., 5.0 for 5% annual returns)</p>
+      </div>
+
+      <div class="mb-6">
+        <%= form.label :target_date, "Project Balance Until", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.date_field :target_date, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <p class="text-gray-600 text-xs mt-1">Select a future date to see projected balance breakdown</p>
       </div>
 
       <div class="flex items-center justify-between">

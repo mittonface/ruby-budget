@@ -22,6 +22,6 @@ class ProjectionsController < ApplicationController
   end
 
   def projection_params
-    params.require(:projection).permit(:monthly_contribution, :annual_return_rate)
+    params.require(:projection).permit(:monthly_contribution, :annual_return_rate, :target_date)
   end
 end
