@@ -37,6 +37,6 @@ class AdjustmentsController < ApplicationController
   end
 
   def adjustment_params
-    params.require(:adjustment).permit(:amount, :new_balance, :description, :adjusted_at)
+    params.require(:adjustment).permit(:amount, :description, :adjusted_at)
   end
 end
