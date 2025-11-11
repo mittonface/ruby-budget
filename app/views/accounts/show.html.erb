@@ -57,29 +57,47 @@
             <p class="text-sm text-green-700">as of <%= @account.projection.target_date.strftime("%B %d, %Y") %></p>
           </div>
 
-          <h3 class="text-xl font-bold mb-3">Monthly Breakdown</h3>
-          <div class="overflow-x-auto max-h-96 overflow-y-auto">
-            <table class="min-w-full bg-white border">
-              <thead class="bg-gray-100 sticky top-0">
-                <tr>
-                  <th class="px-4 py-2 border text-left">Date</th>
-                  <th class="px-4 py-2 border text-right">Contribution</th>
-                  <th class="px-4 py-2 border text-right">Interest Earned</th>
-                  <th class="px-4 py-2 border text-right">Balance</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @projection_result[:monthly_breakdown].each do |month| %>
-                  <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-2 border"><%= month[:date].strftime("%b %Y") %></td>
-                    <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:contribution]) %></td>
-                    <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:interest]) %></td>
-                    <td class="px-4 py-2 border text-right font-semibold"><%= number_to_currency(month[:balance]) %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
+          <!-- Chart Container -->
+          <div class="mb-6">
+            <h3 class="text-xl font-bold mb-3">Projection Growth</h3>
+            <div
+              id="projection-chart"
+              data-controller="projection-chart"
+              data-projection-chart-data-value="<%= @projection_result[:monthly_breakdown].to_json %>"
+              class="bg-white p-4 rounded-lg border border-gray-200"
+            ></div>
           </div>
+
+          <!-- Collapsible Monthly Breakdown Table -->
+          <details class="bg-gray-50 rounded-lg border border-gray-200">
+            <summary class="cursor-pointer px-4 py-3 font-semibold text-gray-700 hover:bg-gray-100 rounded-lg">
+              View detailed monthly breakdown
+            </summary>
+            <div class="px-4 pb-4">
+              <div class="overflow-x-auto max-h-96 overflow-y-auto mt-2">
+                <table class="min-w-full bg-white border">
+                  <thead class="bg-gray-100 sticky top-0">
+                    <tr>
+                      <th class="px-4 py-2 border text-left">Date</th>
+                      <th class="px-4 py-2 border text-right">Contribution</th>
+                      <th class="px-4 py-2 border text-right">Interest Earned</th>
+                      <th class="px-4 py-2 border text-right">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @projection_result[:monthly_breakdown].each do |month| %>
+                      <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-2 border"><%= month[:date].strftime("%b %Y") %></td>
+                        <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:contribution]) %></td>
+                        <td class="px-4 py-2 border text-right"><%= number_to_currency(month[:interest]) %></td>
+                        <td class="px-4 py-2 border text-right font-semibold"><%= number_to_currency(month[:balance]) %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
         </div>
       <% end %>
     <% else %>
