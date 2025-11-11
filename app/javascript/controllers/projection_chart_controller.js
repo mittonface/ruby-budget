@@ -122,13 +122,10 @@ export default class extends Controller {
       },
       xaxis: {
         categories: dates,
+        tickAmount: 12,
         labels: {
           rotate: -45,
-          rotateAlways: false,
-          formatter: function(value, _timestamp, opts) {
-            // Only show every 4th label
-            return opts.dataPointIndex % 4 === 0 ? value : ''
-          }
+          rotateAlways: false
         }
       },
       yaxis: {
