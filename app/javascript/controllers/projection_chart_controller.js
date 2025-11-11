@@ -1,11 +1,33 @@
 import { Controller } from "@hotwired/stimulus"
 
+/**
+ * Projection Chart Controller
+ *
+ * Renders an ApexCharts line chart showing projected account balance over time.
+ *
+ * Expected data format (array of monthly projection objects):
+ * [
+ *   {
+ *     date: "2024-01-01",        // ISO date string
+ *     balance: "1000.00",        // String or number, projected balance
+ *     contribution: "100.00",    // String or number, monthly contribution
+ *     interest: "5.00"           // String or number, interest earned
+ *   },
+ *   ...
+ * ]
+ */
 export default class extends Controller {
   static values = {
     data: Array
   }
 
   connect() {
+    // Check if ApexCharts library is available
+    if (typeof ApexCharts === 'undefined') {
+      console.error('ApexCharts library not loaded')
+      return
+    }
+
     if (!this.hasDataValue || this.dataValue.length === 0) {
       return
     }
@@ -22,6 +44,19 @@ export default class extends Controller {
 
   renderChart() {
     const monthlyData = this.dataValue
+
+    // Validate data structure
+    const hasRequiredProperties = monthlyData.every(month =>
+      month.hasOwnProperty('date') &&
+      month.hasOwnProperty('balance') &&
+      month.hasOwnProperty('contribution') &&
+      month.hasOwnProperty('interest')
+    )
+
+    if (!hasRequiredProperties) {
+      console.error('Invalid data format: missing required properties (date, balance, contribution, interest)')
+      return
+    }
 
     // Extract dates and build series data
     const dates = []
