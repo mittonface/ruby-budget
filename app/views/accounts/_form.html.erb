@@ -15,28 +15,61 @@
   <div data-controller="account-type">
     <!-- Account Type Selection -->
     <div class="mb-6">
-      <%= form.label :type, "Account Type", class: "block text-sm font-medium text-gray-700 mb-2" %>
-      <div class="flex gap-6">
-        <label class="flex items-center cursor-pointer">
+      <%= form.label :type, "Account Type", class: "block text-sm font-medium text-gray-700 mb-3" %>
+      <div class="grid grid-cols-2 gap-4">
+        <label class="flex items-center cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
           <%= form.radio_button :type, "SavingsAccount",
-              checked: (account.type != "Mortgage"),
+              checked: (account.type == "SavingsAccount" || account.type.nil? || account.new_record?),
               data: {
-                account_type_target: "typeInput",
-                action: "change->account-type#toggle"
+                "account-type-target": "typeInput",
+                "action": "change->account-type#toggle"
               },
               class: "h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" %>
-          <span class="ml-2 text-sm text-gray-700">Savings Account</span>
+          <span class="ml-2 text-sm text-gray-700 font-medium">Savings Account</span>
         </label>
 
-        <label class="flex items-center cursor-pointer">
+        <label class="flex items-center cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
           <%= form.radio_button :type, "Mortgage",
               checked: (account.type == "Mortgage"),
               data: {
-                account_type_target: "typeInput",
-                action: "change->account-type#toggle"
+                "account-type-target": "typeInput",
+                "action": "change->account-type#toggle"
               },
               class: "h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" %>
-          <span class="ml-2 text-sm text-gray-700">Mortgage</span>
+          <span class="ml-2 text-sm text-gray-700 font-medium">Mortgage</span>
+        </label>
+
+        <label class="flex items-center cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
+          <%= form.radio_button :type, "CreditCard",
+              checked: (account.type == "CreditCard"),
+              data: {
+                "account-type-target": "typeInput",
+                "action": "change->account-type#toggle"
+              },
+              class: "h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" %>
+          <span class="ml-2 text-sm text-gray-700 font-medium">Credit Card</span>
+        </label>
+
+        <label class="flex items-center cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
+          <%= form.radio_button :type, "LineOfCredit",
+              checked: (account.type == "LineOfCredit"),
+              data: {
+                "account-type-target": "typeInput",
+                "action": "change->account-type#toggle"
+              },
+              class: "h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" %>
+          <span class="ml-2 text-sm text-gray-700 font-medium">Line of Credit</span>
+        </label>
+
+        <label class="flex items-center cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
+          <%= form.radio_button :type, "PersonalLoan",
+              checked: (account.type == "PersonalLoan"),
+              data: {
+                "account-type-target": "typeInput",
+                "action": "change->account-type#toggle"
+              },
+              class: "h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" %>
+          <span class="ml-2 text-sm text-gray-700 font-medium">Personal Loan</span>
         </label>
       </div>
     </div>
@@ -53,7 +86,7 @@
     </div>
 
     <!-- Savings Account Fields -->
-    <div data-account-type-target="savingsFields">
+    <div data-account-type-target="savingsFields" class="space-y-6">
       <div>
         <%= form.label :initial_balance, "Initial Balance", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="relative">
@@ -65,7 +98,7 @@
     </div>
 
     <!-- Mortgage Fields -->
-    <div data-account-type-target="mortgageFields" class="hidden space-y-6">
+    <div data-account-type-target="mortgageFields" class="space-y-6">
       <div>
         <%= form.label :principal, "Loan Amount", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="relative">
@@ -90,8 +123,59 @@
       </div>
     </div>
 
+    <!-- Credit Card / Line of Credit Fields -->
+    <div data-account-type-target="creditFields" class="space-y-6">
+      <div>
+        <%= form.label :credit_limit, "Credit Limit", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <span class="absolute left-4 top-2 text-gray-500">$</span>
+          <%= form.number_field :credit_limit, step: 0.01, class: "w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "0.00" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :apr, "APR (%)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :apr, step: 0.001, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "19.99" %>
+      </div>
+
+      <div>
+        <%= form.label :initial_balance, "Current Balance", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <span class="absolute left-4 top-2 text-gray-500">$</span>
+          <%= form.number_field :initial_balance, step: 0.01, class: "w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "0.00" %>
+        </div>
+        <p class="mt-1 text-sm text-gray-500">The amount currently owed</p>
+      </div>
+    </div>
+
+    <!-- Personal Loan Fields -->
+    <div data-account-type-target="personalLoanFields" class="space-y-6">
+      <div>
+        <%= form.label :principal, "Loan Amount", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <span class="absolute left-4 top-2 text-gray-500">$</span>
+          <%= form.number_field :principal, step: 0.01, class: "w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "0.00" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :apr, "APR (%)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :apr, step: 0.001, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "8.5" %>
+      </div>
+
+      <div>
+        <%= form.label :term_years, "Loan Term (years)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :term_years, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "5" %>
+      </div>
+
+      <div>
+        <%= form.label :loan_start_date, "Loan Start Date", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.date_field :loan_start_date, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+      </div>
+    </div>
+
     <div class="flex gap-4">
-      <%= form.submit class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors cursor-pointer" %>
+      <%= form.submit (account.persisted? ? "Update Account" : "Create Account"), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors cursor-pointer" %>
       <%= link_to "Cancel", account.persisted? ? account_path(account) : accounts_path, class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-lg transition-colors" %>
     </div>
   </div>

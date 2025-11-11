@@ -79,7 +79,7 @@ class AccountsTest < ApplicationSystemTestCase
     visit root_path
 
     assert_text "No savings accounts yet."
-    assert_text "No mortgages yet."
+    assert_text "No debts yet."
   end
 
   test "account shows initial balance and opened date" do

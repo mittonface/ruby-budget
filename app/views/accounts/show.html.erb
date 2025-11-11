@@ -101,6 +101,118 @@
       <%= button_to "Delete Mortgage", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will permanently delete this mortgage and all payment history.", turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
     </div>
 
+  <% elsif @account.is_a?(CreditCard) || @account.is_a?(LineOfCredit) %>
+    <!-- Credit Card / Line of Credit view -->
+    <div class="mb-6">
+      <div class="flex justify-between items-start">
+        <h1 class="text-3xl font-bold text-gray-900"><%= @account.name %></h1>
+        <div class="space-x-2">
+          <%= link_to "Edit", edit_account_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Account Details -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4"><%= @account.is_a?(CreditCard) ? "Credit Card" : "Line of Credit" %> Details</h2>
+        <dl class="space-y-2">
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Credit Limit:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= number_to_currency(@account.credit_limit) %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">APR:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= @account.apr %>%</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Opened Date:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= @account.opened_at.strftime("%B %d, %Y") %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Current Status -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Current Status</h2>
+        <dl class="space-y-2">
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Current Balance Owed:</dt>
+            <dd class="text-sm font-medium text-red-600"><%= number_to_currency(@account.balance) %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Available Credit:</dt>
+            <dd class="text-sm font-medium text-green-600"><%= number_to_currency(@account.credit_limit - @account.balance) %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Credit Utilization:</dt>
+            <dd class="text-sm font-medium <%= (@account.balance / @account.credit_limit * 100) > 30 ? 'text-red-600' : 'text-green-600' %>">
+              <%= number_to_percentage(@account.balance / @account.credit_limit * 100, precision: 1) %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex space-x-4 mb-8">
+      <%= link_to "Record Payment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+      <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will permanently delete this account and all payment history.", turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
+    </div>
+
+  <% elsif @account.is_a?(PersonalLoan) %>
+    <!-- Personal Loan view -->
+    <div class="mb-6">
+      <div class="flex justify-between items-start">
+        <h1 class="text-3xl font-bold text-gray-900"><%= @account.name %></h1>
+        <div class="space-x-2">
+          <%= link_to "Edit", edit_account_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Loan Details -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Loan Details</h2>
+        <dl class="space-y-2">
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Original Principal:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= number_to_currency(@account.principal) %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">APR:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= @account.apr %>%</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Term:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= @account.term_years %> years</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Start Date:</dt>
+            <dd class="text-sm font-medium text-gray-900"><%= @account.loan_start_date.strftime("%B %d, %Y") %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Current Status -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Current Status</h2>
+        <dl class="space-y-2">
+          <div class="flex justify-between">
+            <dt class="text-sm text-gray-600">Remaining Balance:</dt>
+            <dd class="text-sm font-medium text-red-600"><%= number_to_currency(@account.balance) %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex space-x-4 mb-8">
+      <%= link_to "Record Payment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+      <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will permanently delete this account and all payment history.", turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
+    </div>
+
   <% else %>
     <!-- Savings Account view (existing) -->
     <div class="bg-white shadow-sm rounded-lg p-8 mb-8">
@@ -123,7 +235,7 @@
       <div class="flex gap-4">
         <%= link_to "Add Adjustment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
         <%= link_to "Edit Account", edit_account_path(@account), data: { turbo_frame: "_top" }, class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors" %>
-        <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will delete all adjustments." }, class: "bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will delete all adjustments.", turbo_frame: "_top" }, class: "bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
       </div>
     </div>
 

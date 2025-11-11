@@ -33,7 +33,7 @@ class AccountsController < ApplicationController
   end
 
   def new
-    @account = Account.new(opened_at: Date.current, initial_balance: 0)
+    @account = SavingsAccount.new(opened_at: Date.current, initial_balance: 0)
   end
 
   def create
@@ -42,7 +42,7 @@ class AccountsController < ApplicationController
     @account = account_class.new(account_params)
 
     # Set balance based on account type
-    if @account.is_a?(Mortgage)
+    if @account.is_a?(Mortgage) || @account.is_a?(PersonalLoan)
       @account.balance = @account.principal
       @account.initial_balance = @account.principal
     else
