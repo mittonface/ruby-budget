@@ -87,6 +87,9 @@ class MortgagesTest < ApplicationSystemTestCase
   end
 
   test "net worth calculation includes mortgages" do
+    # Clear fixtures for this test
+    Account.delete_all
+
     SavingsAccount.create!(
       name: "Savings",
       balance: 50000,

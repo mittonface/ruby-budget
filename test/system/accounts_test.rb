@@ -73,6 +73,9 @@ class AccountsTest < ApplicationSystemTestCase
   end
 
   test "viewing empty accounts list" do
+    # Clear all fixtures for this test
+    Account.delete_all
+
     visit root_path
 
     assert_text "No savings accounts yet."
