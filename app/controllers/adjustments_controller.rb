@@ -6,7 +6,19 @@ class AdjustmentsController < ApplicationController
   end
 
   def create
-    @adjustment = @account.adjustments.new(adjustment_params)
+    if params[:adjustment][:new_balance].present?
+      # Set Balance mode: calculate adjustment from new_balance
+      new_balance = params[:adjustment][:new_balance].to_f
+      calculated_amount = new_balance - @account.balance
+      @adjustment = @account.adjustments.new(
+        amount: calculated_amount,
+        description: params[:adjustment][:description],
+        adjusted_at: Time.current
+      )
+    else
+      # Add Adjustment mode: use provided amount
+      @adjustment = @account.adjustments.new(adjustment_params)
+    end
 
     Account.transaction do
       @adjustment.save!
@@ -25,6 +37,6 @@ class AdjustmentsController < ApplicationController
   end
 
   def adjustment_params
-    params.require(:adjustment).permit(:amount, :description, :adjusted_at)
+    params.require(:adjustment).permit(:amount, :new_balance, :description, :adjusted_at)
   end
 end
