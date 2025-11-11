@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_11_130749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,9 +18,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
     t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.decimal "initial_balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "interest_rate", precision: 5, scale: 3
+    t.date "loan_start_date"
     t.string "name", null: false
     t.datetime "opened_at", null: false
+    t.decimal "principal", precision: 10, scale: 2
+    t.integer "term_years"
+    t.string "type"
     t.datetime "updated_at", null: false
+    t.index ["type"], name: "index_accounts_on_type"
   end
 
   create_table "adjustments", force: :cascade do |t|
@@ -30,8 +36,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "updated_at", null: false
-    t.index [ "account_id", "adjusted_at" ], name: "index_adjustments_on_account_id_and_adjusted_at"
-    t.index [ "account_id" ], name: "index_adjustments_on_account_id"
+    t.index ["account_id", "adjusted_at"], name: "index_adjustments_on_account_id_and_adjusted_at"
+    t.index ["account_id"], name: "index_adjustments_on_account_id"
   end
 
   create_table "projections", force: :cascade do |t|
@@ -41,7 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_013347) do
     t.decimal "monthly_contribution", precision: 10, scale: 2, default: "0.0", null: false
     t.date "target_date"
     t.datetime "updated_at", null: false
-    t.index [ "account_id" ], name: "index_projections_on_account_id", unique: true
+    t.index ["account_id"], name: "index_projections_on_account_id", unique: true
   end
 
   add_foreign_key "adjustments", "accounts"
