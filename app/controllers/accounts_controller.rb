@@ -24,11 +24,20 @@ class AccountsController < ApplicationController
   end
 
   def create
-    @account = Account.new(account_params)
-    @account.balance = @account.initial_balance
+    # Use type param to instantiate correct subclass
+    account_class = account_type_class
+    @account = account_class.new(account_params)
+
+    # Set balance based on account type
+    if @account.is_a?(Mortgage)
+      @account.balance = @account.principal
+      @account.initial_balance = @account.principal
+    else
+      @account.balance = @account.initial_balance
+    end
 
     if @account.save
-      redirect_to @account, notice: "Account was successfully created."
+      redirect_to account_url(@account), notice: "Account was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -56,7 +65,29 @@ class AccountsController < ApplicationController
     @account = Account.find(params[:id])
   end
 
+  def account_type_class
+    type = params.dig(:account, :type)
+    return Account unless type.present?
+
+    # Whitelist allowed account types
+    case type
+    when "SavingsAccount"
+      SavingsAccount
+    when "Mortgage"
+      Mortgage
+    else
+      Account
+    end
+  end
+
   def account_params
-    params.require(:account).permit(:name, :initial_balance, :opened_at)
+    permitted = [ :name, :initial_balance, :opened_at, :type ]
+
+    # Add mortgage-specific params if creating a Mortgage
+    if params.dig(:account, :type) == "Mortgage"
+      permitted += [ :principal, :interest_rate, :term_years, :loan_start_date ]
+    end
+
+    params.require(:account).permit(permitted)
   end
 end
