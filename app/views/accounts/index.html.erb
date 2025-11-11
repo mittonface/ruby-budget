@@ -23,7 +23,7 @@
     <% if @savings_accounts.any? %>
       <div class="bg-white shadow overflow-hidden rounded-lg divide-y divide-gray-200">
         <% @savings_accounts.each do |account| %>
-          <%= link_to account, class: "block hover:bg-gray-50 transition" do %>
+          <%= link_to account_path(account), class: "block hover:bg-gray-50 transition" do %>
             <div class="px-6 py-4">
               <div class="flex justify-between items-center">
                 <div>
@@ -50,7 +50,7 @@
     <% if @mortgages.any? %>
       <div class="bg-white shadow overflow-hidden rounded-lg divide-y divide-gray-200">
         <% @mortgages.each do |mortgage| %>
-          <%= link_to mortgage, class: "block hover:bg-gray-50 transition" do %>
+          <%= link_to account_path(mortgage), class: "block hover:bg-gray-50 transition" do %>
             <div class="px-6 py-4">
               <div class="flex justify-between items-center">
                 <div>
