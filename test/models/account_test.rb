@@ -98,4 +98,23 @@ class AccountTest < ActiveSupport::TestCase
 
     assert_nil Adjustment.find_by(id: adjustment_id)
   end
+
+  test "should query by type using STI" do
+    assert_equal 2, SavingsAccount.count
+    assert_equal 1, Mortgage.count
+    assert_equal 3, Account.count
+  end
+
+  test "should maintain polymorphic associations across types" do
+    savings = accounts(:savings_one)
+    mortgage = accounts(:mortgage_one)
+
+    # Both should support adjustments
+    assert_respond_to savings, :adjustments
+    assert_respond_to mortgage, :adjustments
+
+    # Both should support projections
+    assert_respond_to savings, :projection
+    assert_respond_to mortgage, :projection
+  end
 end

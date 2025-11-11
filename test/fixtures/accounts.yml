@@ -1,0 +1,24 @@
+savings_one:
+  type: SavingsAccount
+  name: Emergency Fund
+  balance: 10000.00
+  initial_balance: 10000.00
+  opened_at: <%= 1.year.ago.to_date %>
+
+savings_two:
+  type: SavingsAccount
+  name: Vacation Fund
+  balance: 5000.00
+  initial_balance: 3000.00
+  opened_at: <%= 6.months.ago.to_date %>
+
+mortgage_one:
+  type: Mortgage
+  name: Home Mortgage
+  balance: 300000.00
+  initial_balance: 300000.00
+  opened_at: <%= 2.years.ago.to_date %>
+  principal: 300000.00
+  interest_rate: 3.5
+  term_years: 30
+  loan_start_date: <%= 2.years.ago.to_date %>
