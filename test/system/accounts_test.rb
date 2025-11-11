@@ -75,8 +75,8 @@ class AccountsTest < ApplicationSystemTestCase
   test "viewing empty accounts list" do
     visit root_path
 
-    assert_text "No accounts yet"
-    assert_text "Create your first savings account to get started!"
+    assert_text "No savings accounts yet."
+    assert_text "No mortgages yet."
   end
 
   test "account shows initial balance and opened date" do

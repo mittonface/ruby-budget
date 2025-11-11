@@ -12,7 +12,7 @@
       <p class="text-2xl font-bold text-gray-900"><%= number_to_currency(@account.balance) %></p>
     </div>
 
-    <%= form_with(model: [@account, @adjustment], class: "space-y-6", data: { controller: "adjustment-form" }) do |form| %>
+    <%= form_with(model: @adjustment, url: account_adjustments_path(@account), class: "space-y-6", data: { controller: "adjustment-form" }) do |form| %>
       <% if @adjustment.errors.any? %>
         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
           <h2 class="text-red-800 font-semibold mb-2">

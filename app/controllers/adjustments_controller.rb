@@ -25,7 +25,7 @@ class AdjustmentsController < ApplicationController
       @account.update!(balance: @account.balance + @adjustment.amount)
     end
 
-    redirect_to @account, notice: "Adjustment was successfully added."
+    redirect_to account_path(@account), notice: "Adjustment was successfully added."
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   end
