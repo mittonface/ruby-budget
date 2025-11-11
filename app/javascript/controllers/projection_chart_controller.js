@@ -127,7 +127,7 @@ export default class extends Controller {
           rotateAlways: false,
           showDuplicates: false,
           hideOverlappingLabels: true,
-          tickAmount: Math.floor(dates.length / 2)
+          tickAmount: Math.floor(dates.length / 4)
         }
       },
       yaxis: {
