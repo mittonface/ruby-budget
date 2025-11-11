@@ -125,9 +125,10 @@ export default class extends Controller {
         labels: {
           rotate: -45,
           rotateAlways: false,
-          showDuplicates: false,
-          hideOverlappingLabels: true,
-          tickAmount: Math.floor(dates.length / 4)
+          formatter: function(value, _timestamp, opts) {
+            // Only show every 4th label
+            return opts.dataPointIndex % 4 === 0 ? value : ''
+          }
         }
       },
       yaxis: {
