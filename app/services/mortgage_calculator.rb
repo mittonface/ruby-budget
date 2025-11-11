@@ -91,4 +91,29 @@ class MortgageCalculator
 
     schedule
   end
+
+  # Calculate when mortgage will be paid off
+  # Considers current balance and extra payments
+  def calculate_payoff_date
+    return Date.current if mortgage.balance <= 0
+
+    monthly_payment = calculate_monthly_payment
+    annual_rate = mortgage.interest_rate
+    monthly_rate = (annual_rate / 12.0) / 100.0
+    extra_payment = mortgage.projection&.monthly_contribution || 0
+
+    balance = mortgage.balance
+    months_to_payoff = 0
+    max_iterations = mortgage.term_years * 12 * 2  # Safety limit
+
+    while balance > 0 && months_to_payoff < max_iterations
+      interest = balance * monthly_rate
+      principal = monthly_payment - interest + extra_payment
+
+      balance -= principal
+      months_to_payoff += 1
+    end
+
+    mortgage.loan_start_date + months_to_payoff.months
+  end
 end

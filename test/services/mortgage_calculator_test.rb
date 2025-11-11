@@ -112,4 +112,36 @@ class MortgageCalculatorTest < ActiveSupport::TestCase
     # Extra payments should reduce balance faster
     assert schedule_with_extra[11][:ending_balance] < schedule_normal[11][:ending_balance]
   end
+
+  test "calculates payoff date based on regular payments" do
+    calculator = MortgageCalculator.new(@mortgage)
+    payoff_date = calculator.calculate_payoff_date
+
+    # 30-year mortgage starting today should pay off in ~30 years
+    expected_date = @mortgage.loan_start_date + (30 * 12).months
+    assert_in_delta expected_date.to_time.to_i, payoff_date.to_time.to_i, 2.months.to_i
+  end
+
+  test "calculates earlier payoff date with extra payments" do
+    @mortgage.build_projection(monthly_contribution: 500.0)
+
+    calculator = MortgageCalculator.new(@mortgage)
+    payoff_with_extra = calculator.calculate_payoff_date
+
+    # Without extra payments
+    @mortgage.projection.monthly_contribution = 0
+    payoff_normal = calculator.calculate_payoff_date
+
+    # Extra payments should result in earlier payoff
+    assert payoff_with_extra < payoff_normal
+  end
+
+  test "handles already paid off mortgage" do
+    @mortgage.balance = 0
+
+    calculator = MortgageCalculator.new(@mortgage)
+    payoff_date = calculator.calculate_payoff_date
+
+    assert_equal Date.current, payoff_date
+  end
 end
