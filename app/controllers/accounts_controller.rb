@@ -3,11 +3,11 @@ class AccountsController < ApplicationController
 
   def index
     @savings_accounts = SavingsAccount.all.order(created_at: :desc)
-    @mortgages = Mortgage.all.order(created_at: :desc)
+    @debt_accounts = Account.where(type: ['Mortgage', 'CreditCard', 'LineOfCredit', 'PersonalLoan']).order(created_at: :desc)
 
     # Calculate net worth
     total_savings = @savings_accounts.sum(:balance)
-    total_debt = @mortgages.sum(:balance)
+    total_debt = @debt_accounts.sum(:balance)
     @net_worth = total_savings - total_debt
   end
 
@@ -88,6 +88,12 @@ class AccountsController < ApplicationController
       SavingsAccount
     when "Mortgage"
       Mortgage
+    when "CreditCard"
+      CreditCard
+    when "LineOfCredit"
+      LineOfCredit
+    when "PersonalLoan"
+      PersonalLoan
     else
       Account
     end
@@ -96,9 +102,14 @@ class AccountsController < ApplicationController
   def account_params
     permitted = [ :name, :initial_balance, :opened_at, :type ]
 
-    # Add mortgage-specific params if creating a Mortgage
-    if params.dig(:account, :type) == "Mortgage" || @account&.is_a?(Mortgage)
+    # Add debt-specific params based on account type
+    account_type = params.dig(:account, :type) || @account&.type
+
+    case account_type
+    when "Mortgage", "PersonalLoan"
       permitted += [ :principal, :interest_rate, :term_years, :loan_start_date ]
+    when "CreditCard", "LineOfCredit"
+      permitted += [ :credit_limit, :apr ]
     end
 
     params.require(:account).permit(permitted)

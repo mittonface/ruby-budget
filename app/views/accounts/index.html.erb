@@ -44,24 +44,28 @@
       <% end %>
     </div>
 
-    <!-- Mortgages Section -->
+    <!-- Debts Section -->
     <div>
-      <h2 class="px-6 py-3 text-sm font-semibold text-gray-700 uppercase tracking-wider bg-gray-50">Mortgages</h2>
-      <% if @mortgages.any? %>
+      <h2 class="px-6 py-3 text-sm font-semibold text-gray-700 uppercase tracking-wider bg-gray-50">Debts</h2>
+      <% if @debt_accounts.any? %>
         <nav class="py-2">
-          <% @mortgages.each do |mortgage| %>
-            <%= link_to account_path(mortgage), data: { turbo_frame: "account_detail" }, class: "block px-6 py-4 hover:bg-gray-50 border-l-4 border-transparent hover:border-red-500 transition-colors" do %>
+          <% @debt_accounts.each do |debt| %>
+            <%= link_to account_path(debt), data: { turbo_frame: "account_detail" }, class: "block px-6 py-4 hover:bg-gray-50 border-l-4 border-transparent hover:border-red-500 transition-colors" do %>
               <div class="flex justify-between items-start">
                 <div class="flex-1">
-                  <h3 class="font-semibold text-gray-900 mb-1"><%= mortgage.name %></h3>
+                  <h3 class="font-semibold text-gray-900 mb-1"><%= debt.name %></h3>
                   <p class="text-xs text-gray-500">
-                    <%= mortgage.interest_rate %>% · <%= mortgage.term_years %> years
+                    <% if debt.is_a?(Mortgage) || debt.is_a?(PersonalLoan) %>
+                      <%= debt.interest_rate || debt.apr %>% · <%= debt.term_years %> years
+                    <% elsif debt.is_a?(CreditCard) || debt.is_a?(LineOfCredit) %>
+                      <%= debt.apr %>% APR · Limit: <%= number_to_currency(debt.credit_limit) %>
+                    <% end %>
                   </p>
                 </div>
                 <div class="text-right">
                   <span class="text-sm text-gray-500 block">Owed</span>
                   <span class="text-lg font-bold text-red-600">
-                    <%= number_to_currency(mortgage.balance) %>
+                    <%= number_to_currency(debt.balance) %>
                   </span>
                 </div>
               </div>
@@ -69,7 +73,7 @@
           <% end %>
         </nav>
       <% else %>
-        <p class="px-6 py-4 text-sm text-gray-500 italic">No mortgages yet.</p>
+        <p class="px-6 py-4 text-sm text-gray-500 italic">No debts yet.</p>
       <% end %>
     </div>
   </div>
