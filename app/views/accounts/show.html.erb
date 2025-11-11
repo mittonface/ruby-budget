@@ -98,6 +98,7 @@
     <div class="flex space-x-4 mb-8">
       <%= link_to "Record Payment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
       <%= link_to "Extra Payment Scenarios", edit_account_projection_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      <%= button_to "Delete Mortgage", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will permanently delete this mortgage and all payment history.", turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
     </div>
 
   <% else %>
