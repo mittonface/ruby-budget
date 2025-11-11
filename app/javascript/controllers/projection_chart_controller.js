@@ -151,8 +151,8 @@ export default class extends Controller {
         }
       },
       legend: {
-        position: 'top',
-        horizontalAlign: 'right'
+        position: 'bottom',
+        horizontalAlign: 'center'
       },
       markers: {
         size: 0,
