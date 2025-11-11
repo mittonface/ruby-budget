@@ -32,6 +32,11 @@ export default class extends Controller {
       return
     }
 
+    // Prevent duplicate chart renders
+    if (this.chart) {
+      return
+    }
+
     this.renderChart()
   }
 
@@ -111,21 +116,21 @@ export default class extends Controller {
           }
         },
         animations: {
-          enabled: true,
-          speed: 800
+          enabled: false
         }
       },
       stroke: {
         width: [3, 2, 2],
-        curve: 'smooth',
+        curve: 'straight',
         dashArray: [0, 5, 5]
       },
       xaxis: {
         categories: dates,
-        tickAmount: 18,
+        tickAmount: Math.min(12, dates.length),
         labels: {
           rotate: -45,
-          rotateAlways: false
+          rotateAlways: false,
+          trim: true
         }
       },
       yaxis: {
