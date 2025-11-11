@@ -1,13 +1,13 @@
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<%= turbo_frame_tag "account_detail" do %>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-  <% if @account.is_a?(Mortgage) %>
+    <% if @account.is_a?(Mortgage) %>
     <!-- Mortgage-specific view -->
     <div class="mb-6">
       <div class="flex justify-between items-start">
         <h1 class="text-3xl font-bold text-gray-900"><%= @account.name %></h1>
         <div class="space-x-2">
-          <%= link_to "Edit", edit_account_path(@account), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
-          <%= link_to "Back", accounts_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+          <%= link_to "Edit", edit_account_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
         </div>
       </div>
     </div>
@@ -96,8 +96,8 @@
 
     <!-- Actions -->
     <div class="flex space-x-4 mb-8">
-      <%= link_to "Record Payment", new_account_adjustment_path(@account), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
-      <%= link_to "Extra Payment Scenarios", edit_account_projection_path(@account), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      <%= link_to "Record Payment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+      <%= link_to "Extra Payment Scenarios", edit_account_projection_path(@account), data: { turbo_frame: "_top" }, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
     </div>
 
   <% else %>
@@ -120,8 +120,8 @@
       </div>
 
       <div class="flex gap-4">
-        <%= link_to "Add Adjustment", new_account_adjustment_path(@account), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
-        <%= link_to "Edit Account", edit_account_path(@account), class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= link_to "Add Adjustment", new_account_adjustment_path(@account), data: { turbo_frame: "_top" }, class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= link_to "Edit Account", edit_account_path(@account), data: { turbo_frame: "_top" }, class: "bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors" %>
         <%= button_to "Delete Account", account_path(@account), method: :delete, data: { turbo_confirm: "Are you sure? This will delete all adjustments." }, class: "bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
       </div>
     </div>
@@ -147,7 +147,7 @@
             </p>
           <% end %>
         </div>
-        <%= link_to "Edit Projection Settings", edit_account_projection_path(@account), class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= link_to "Edit Projection Settings", edit_account_projection_path(@account), data: { turbo_frame: "_top" }, class: "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
 
         <% if @projection_result %>
           <div class="mt-6">
@@ -203,7 +203,7 @@
         <% end %>
       <% else %>
         <p class="text-gray-600 mb-4">Set up projection parameters to see future balance estimates.</p>
-        <%= link_to "Set Up Projection", edit_account_projection_path(@account), class: "bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
+        <%= link_to "Set Up Projection", edit_account_projection_path(@account), data: { turbo_frame: "_top" }, class: "bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" %>
       <% end %>
     </div>
   <% end %>
@@ -263,4 +263,5 @@
       </div>
     <% end %>
   </div>
-</div>
+  </div>
+<% end %>
