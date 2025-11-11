@@ -91,7 +91,7 @@ class AccountsController < ApplicationController
     permitted = [ :name, :initial_balance, :opened_at, :type ]
 
     # Add mortgage-specific params if creating a Mortgage
-    if params.dig(:account, :type) == "Mortgage"
+    if params.dig(:account, :type) == "Mortgage" || @account&.is_a?(Mortgage)
       permitted += [ :principal, :interest_rate, :term_years, :loan_start_date ]
     end
 
